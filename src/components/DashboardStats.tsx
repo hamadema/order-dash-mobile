@@ -24,7 +24,7 @@ export const DashboardStats: React.FC<StatsProps> = ({ stats, currentFilter, onF
   ];
 
   return (
-    <div className="flex flex-col gap-2 mb-6" id="dashboard-stats">
+    <div className="flex flex-col gap-2 mb-4" id="dashboard-stats">
       {/* Top 4 Stats Grid */}
       <div className="grid grid-cols-2 gap-2">
         {cards.map((card, idx) => (

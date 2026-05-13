@@ -18,7 +18,7 @@ interface OrderListProps {
 
 export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
   return (
-    <div className="flex flex-col gap-6" id="order-list">
+    <div className="flex flex-col gap-4" id="order-list">
       <AnimatePresence>
         {orders.map((order, idx) => {
           const isStudio = order.customerType.toUpperCase() === 'STUDIO';
@@ -37,7 +37,7 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
               className={`relative bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden border-l-8 ${borderColor}`}
               id={`order-card-${order.id}`}
             >
-              <div className="p-6">
+              <div className="p-4">
                 {/* Header Section */}
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex flex-col">
@@ -49,10 +49,10 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
                   </span>
                 </div>
 
-                <div className="h-[1px] bg-slate-100 w-full mb-5" />
+                <div className="h-[1px] bg-slate-100 w-full mb-3" />
 
                 {/* Info Grid - 2 Columns */}
-                <div className="grid grid-cols-2 gap-x-6 gap-y-5 mb-6">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3 mb-4">
                   {/* Phone Column */}
                   <a href={`tel:${order.phone}`} className="flex flex-col gap-1 hover:opacity-75 transition-opacity">
                     <div className="flex items-center gap-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
@@ -114,8 +114,8 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
                 </div>
 
                 {/* Financial Box Section */}
-                <div className="bg-sky-50/60 rounded-[2rem] p-5 mb-5 border border-sky-100/50">
-                  <div className="grid grid-cols-2 gap-y-5">
+                <div className="bg-sky-50/60 rounded-[2rem] p-4 mb-3 border border-sky-100/50">
+                  <div className="grid grid-cols-2 gap-y-3">
                     {/* ADV Row */}
                     <div className="flex flex-col gap-0.5">
                       <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">ADV 1</span>
@@ -154,7 +154,7 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
                 </div>
 
                 {/* Footer Update Timestamp */}
-                <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] bg-slate-50/80 py-2.5 px-4 rounded-xl w-full">
+                <div className="flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] bg-slate-50/80 py-2 px-4 rounded-lg w-full">
                   <History size={12} strokeWidth={3} />
                   <span>Last System Update</span>
                 </div>

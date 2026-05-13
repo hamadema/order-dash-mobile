@@ -9,6 +9,7 @@ import { OrderDetailsOverlay } from './components/OrderDetailsOverlay';
 
 export default function App() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [isLive, setIsLive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Pending' | 'Complete' | 'StudioPending' | 'MediaPending'>('All');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -31,8 +32,9 @@ export default function App() {
   const loadOrders = async () => {
     setIsLoading(true);
     try {
-      const data = await orderService.getOrders();
-      setOrders(data);
+      const response = await orderService.getOrders();
+      setOrders(response.orders);
+      setIsLive(response.isLive);
     } catch (error) {
       console.error('Failed to load orders:', error);
     } finally {
@@ -43,8 +45,9 @@ export default function App() {
   const syncOrdersSilently = async () => {
     setIsSyncing(true);
     try {
-      const data = await orderService.getOrders();
-      setOrders(data);
+      const response = await orderService.getOrders();
+      setOrders(response.orders);
+      setIsLive(response.isLive);
     } catch (error) {
       console.error('Auto-sync failed:', error);
     } finally {
@@ -102,7 +105,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden" id="app-root">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 px-6 pt-12 pb-4">
+      <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 px-6 pt-10 pb-3">
         <div className="max-w-md mx-auto flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
@@ -146,14 +149,30 @@ export default function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-md mx-auto px-6 pt-44 pb-32">
+      <main className="max-w-md mx-auto px-6 pt-40 pb-32">
+        {!isLive && !isLoading && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col gap-2"
+          >
+            <div className="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
+              <Info size={16} />
+              <span>Viewing Sample Data</span>
+            </div>
+            <p className="text-xs text-amber-700 leading-relaxed">
+              Connect your Google Sheets by setting the <code className="bg-amber-100 px-1 rounded">VITE_APPS_SCRIPT_URL</code> in your environment settings to see your real orders.
+            </p>
+          </motion.div>
+        )}
+
         <DashboardStats 
           stats={stats} 
           currentFilter={statusFilter}
           onFilterChange={(f) => setStatusFilter(f as any)}
         />
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
             {statusFilter === 'All' ? 'Recent Orders' : `${statusFilter} Orders`}
           </h2>

@@ -5,14 +5,17 @@ import Papa from 'papaparse';
 class OrderService {
   private orders: Order[] = [...SAMPLE_ORDERS];
 
-  async getOrders(): Promise<Order[]> {
+  private isUsingSampleData = false;
+
+  async getOrders(): Promise<{ orders: Order[], isLive: boolean }> {
     // @ts-ignore
     const apiUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
 
     if (!apiUrl) {
+      this.isUsingSampleData = true;
       console.warn('VITE_APPS_SCRIPT_URL not set, using sample data.');
       return new Promise((resolve) => {
-        setTimeout(() => resolve(this.orders), 500);
+        setTimeout(() => resolve({ orders: this.orders, isLive: false }), 500);
       });
     }
 
@@ -43,10 +46,12 @@ class OrderService {
       }));
       
       this.orders = parsedOrders.filter(o => o.id);
-      return this.orders;
+      this.isUsingSampleData = false;
+      return { orders: this.orders, isLive: true };
     } catch (error) {
       console.error('Error fetching data from Apps Script:', error);
-      return this.orders; // Fallback
+      this.isUsingSampleData = true;
+      return { orders: this.orders, isLive: false }; // Fallback
     }
   }
 
