@@ -28,7 +28,7 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, onSelect }) => {
           
           return (
             <motion.div
-              key={order.id}
+              key={`${order.id}-${idx}`}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}

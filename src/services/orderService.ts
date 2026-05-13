@@ -1,19 +1,38 @@
 import { Order } from '../types';
 import { SAMPLE_ORDERS } from '../data/sampleData';
-import Papa from 'papaparse';
 
 class OrderService {
   private orders: Order[] = [...SAMPLE_ORDERS];
 
   private isUsingSampleData = false;
 
-  async getOrders(): Promise<{ orders: Order[], isLive: boolean }> {
+  private getEffectiveUrl(): string | null {
+    // Check localStorage first
+    const savedUrl = localStorage.getItem('custom_apps_script_url');
+    if (savedUrl) return savedUrl;
+
     // @ts-ignore
-    const apiUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
+    return import.meta.env.VITE_APPS_SCRIPT_URL || null;
+  }
+
+  setCustomUrl(url: string) {
+    if (url) {
+      localStorage.setItem('custom_apps_script_url', url);
+    } else {
+      localStorage.removeItem('custom_apps_script_url');
+    }
+  }
+
+  getCustomUrl(): string {
+    return localStorage.getItem('custom_apps_script_url') || '';
+  }
+
+  async getOrders(): Promise<{ orders: Order[], isLive: boolean }> {
+    const apiUrl = this.getEffectiveUrl();
 
     if (!apiUrl) {
       this.isUsingSampleData = true;
-      console.warn('VITE_APPS_SCRIPT_URL not set, using sample data.');
+      console.warn('API URL not set, using sample data.');
       return new Promise((resolve) => {
         setTimeout(() => resolve({ orders: this.orders, isLive: false }), 500);
       });
@@ -21,7 +40,7 @@ class OrderService {
 
     try {
       // Use no-cache to ensure we get fresh results from the script
-      const response = await window.fetch(`${apiUrl}?t=${Date.now()}`);
+      const response = await fetch(`${apiUrl}?t=${Date.now()}`);
       if (!response.ok) throw new Error('API fetch failed');
       
       const data = await response.json();
@@ -56,8 +75,7 @@ class OrderService {
   }
 
   async saveOrder(order: Partial<Order>): Promise<boolean> {
-    // @ts-ignore
-    const apiUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
+    const apiUrl = this.getEffectiveUrl();
     if (!apiUrl) return false;
 
     try {
@@ -80,7 +98,7 @@ class OrderService {
         customerType: order.customerType
       };
 
-      const response = await window.fetch(apiUrl, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         mode: 'no-cors', // Apps Script POST often requires no-cors if not using a proxy
         headers: { 'Content-Type': 'application/json' },

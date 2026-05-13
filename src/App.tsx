@@ -16,6 +16,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [customUrl, setCustomUrl] = useState(orderService.getCustomUrl());
 
   useEffect(() => {
     loadOrders();
@@ -28,6 +29,12 @@ export default function App() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSaveSettings = () => {
+    orderService.setCustomUrl(customUrl);
+    setShowSettings(false);
+    loadOrders(); // Reload with new URL
+  };
 
   const loadOrders = async () => {
     setIsLoading(true);
@@ -229,32 +236,36 @@ export default function App() {
               </div>
 
               <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Apps Script URL</label>
+                  <input 
+                    type="text"
+                    value={customUrl}
+                    onChange={(e) => setCustomUrl(e.target.value)}
+                    placeholder="https://script.google.com/macros/s/.../exec"
+                    className="w-full bg-slate-100 border-none rounded-2xl py-3 px-4 text-xs font-bold focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  />
+                  <p className="text-[9px] text-slate-400 italic px-1 leading-tight">
+                    Enter the Web App URL from your Google Apps Script deployment.
+                  </p>
+                </div>
+
                 <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
                   <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                     <Info size={18} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase">Version</p>
-                    <p className="text-sm font-bold text-slate-700">v1.2.0</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
-                    <RefreshCw size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase">Auto Sync</p>
-                    <p className="text-sm font-bold text-slate-700">Enabled</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase leading-none mb-1">Version</p>
+                    <p className="text-sm font-bold text-slate-700 leading-none">v1.2.5</p>
                   </div>
                 </div>
               </div>
 
               <button 
-                onClick={() => setShowSettings(false)}
-                className="w-full bg-slate-900 text-white rounded-2xl py-3 font-bold text-sm"
+                onClick={handleSaveSettings}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-3.5 font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 transition-all active:scale-95"
               >
-                Done
+                Save Settings
               </button>
             </motion.div>
           </motion.div>

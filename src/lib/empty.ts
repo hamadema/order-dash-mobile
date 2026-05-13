@@ -1,25 +1,26 @@
 // Harmless empty module to prevent problematic polyfills from loading in the browser
 console.log('Stubbing out problematic polyfill');
 
-export const FormData = window.FormData;
-export const fetch = window.fetch;
-export const Blob = window.Blob;
-export const File = window.File;
-export const Headers = window.Headers;
-export const Request = window.Request;
-export const Response = window.Response;
+export const FormData = typeof window !== 'undefined' ? window.FormData : undefined;
+export const fetch = typeof window !== 'undefined' ? window.fetch : undefined;
+export const Blob = typeof window !== 'undefined' ? window.Blob : undefined;
+export const File = typeof window !== 'undefined' ? window.File : undefined;
+export const Headers = typeof window !== 'undefined' ? window.Headers : undefined;
+export const Request = typeof window !== 'undefined' ? window.Request : undefined;
+export const Response = typeof window !== 'undefined' ? window.Response : undefined;
 
 export const formDataToBlob = () => new Blob();
 
 const empty = () => {};
+// Do not assign to window.fetch or similar here
 Object.assign(empty, {
-  FormData: window.FormData,
-  fetch: window.fetch,
-  Blob: window.Blob,
-  File: window.File,
-  Headers: window.Headers,
-  Request: window.Request,
-  Response: window.Response,
+  FormData,
+  fetch,
+  Blob,
+  File,
+  Headers,
+  Request,
+  Response,
 });
 
 export default empty;
