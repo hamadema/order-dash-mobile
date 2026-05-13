@@ -1,0 +1,6 @@
+{
+  "name": "Order Dash",
+  "description": "A modern mobile-first dashboard to search and track orders from a Google Sheet, featuring real-time search, financial summaries, and detailed order insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
